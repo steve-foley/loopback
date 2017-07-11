@@ -401,6 +401,33 @@ describe('User', function() {
     var pass73Char = pass72Char + '3';
     var passTooLong = pass72Char + 'WXYZ1234';
 
+    it('rejects empty passwords creation', function(done) {
+      try {
+        User.create({email: 'b@c.com', password: ''}, function(err) {
+          if (err) return done(err);
+          done(new Error('User.create() should have thrown an error.'));
+        });
+      } catch (e) {
+        expect(e).to.match(/Invalid password/);
+        done();
+      }
+    });
+
+    it('rejects updating with empty password', function(done) {
+      try {
+        User.create({email: 'blank@c.com', password: pass72Char}, function(err, userCreated) {
+          if (err) return done(err);
+          userCreated.updateAttribute('password', '', function(err, userUpdated) {
+            assert(err);
+            done(new Error('User.updateAttribute() should have thrown an error.'));
+          });
+        });
+      } catch (e) {
+        expect(e).to.match(/cannot be blank/);
+        done();
+      }
+    });
+
     it('rejects passwords longer than 72 characters', function(done) {
       try {
         User.create({ email: 'b@c.com', password: pass73Char }, function(err) {
