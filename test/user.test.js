@@ -414,19 +414,15 @@ describe('User', function() {
     });
 
     it('rejects updating with empty password', function(done) {
-      try {
         User.create({email: 'blank@c.com', password: pass72Char}, function(err, userCreated) {
           if (err) return done(err);
           userCreated.updateAttribute('password', '', function(err, userUpdated) {
             assert(err);
-            done(new Error('User.updateAttribute() should have thrown an error.'));
+            expect(err).to.match(/Invalid Password/);
+            done();
           });
         });
-      } catch (e) {
-        expect(e).to.match(/cannot be blank/);
-        done();
-      }
-    });
+      });
 
     it('rejects passwords longer than 72 characters', function(done) {
       try {
