@@ -408,7 +408,8 @@ describe('User', function() {
           done(new Error('User.create() should have thrown an error.'));
         });
       } catch (e) {
-        expect(e).to.match(/Invalid password/);
+        expect(e.code).to.equal('INVALID_PASSWORD');
+        expect(e.statusCode).to.equal(422);
         done();
       }
     });
@@ -418,7 +419,8 @@ describe('User', function() {
           if (err) return done(err);
           userCreated.updateAttribute('password', '', function(err, userUpdated) {
             assert(err);
-            expect(err).to.match(/Invalid Password/);
+            expect(err.code).to.equal('INVALID_PASSWORD');
+            expect(err.statusCode).to.equal(422);
             done();
           });
         });
