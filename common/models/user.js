@@ -870,16 +870,6 @@ module.exports = function(User) {
     next();
   });
 
-  User.observe('before save', function emptyPasswordUpdate(ctx, next) {
-    if ((ctx.instance && ctx.instance.password === '') || (ctx.data && ctx.data.password === '')) {
-      var err =  new Error(g.f('Invalid Password'));
-      err.code = 'INVALID_PASSWORD';
-      err.statusCode = 422;
-      next(err);
-    }
-    next();
-  });
-
   User.observe('before save', function prepareForTokenInvalidation(ctx, next) {
     var invalidationEnabled = ctx.Model.app &&
       ctx.Model.app.get('logoutSessionsOnSensitiveChanges');

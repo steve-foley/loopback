@@ -418,7 +418,6 @@ describe('User', function() {
         User.create({email: 'blank@c.com', password: pass72Char}, function(err, userCreated) {
           if (err) return done(err);
           userCreated.updateAttribute('password', '', function(err, userUpdated) {
-            assert(err);
             expect(err.code).to.equal('INVALID_PASSWORD');
             expect(err.statusCode).to.equal(422);
             done();
@@ -432,8 +431,9 @@ describe('User', function() {
           if (err) return done(err);
           done(new Error('User.create() should have thrown an error.'));
         });
-      } catch (e) {
-        expect(e).to.match(/Password too long/);
+      } catch (err) {
+        expect(err.code).to.equal('PASSWORD_TOO_LONG');
+        expect(err.statusCode).to.equal(422);
         done();
       }
     });
