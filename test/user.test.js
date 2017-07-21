@@ -402,16 +402,11 @@ describe('User', function() {
     var passTooLong = pass72Char + 'WXYZ1234';
 
     it('rejects empty passwords creation', function(done) {
-      try {
-        User.create({email: 'b@c.com', password: ''}, function(err) {
-          if (err) return done(err);
-          done(new Error('User.create() should have thrown an error.'));
+      User.create({email: 'b@c.com', password: ''}, function(err) {
+          expect(err.code).to.equal('INVALID_PASSWORD');
+          expect(err.statusCode).to.equal(422);
+          done();
         });
-      } catch (e) {
-        expect(e.code).to.equal('INVALID_PASSWORD');
-        expect(e.statusCode).to.equal(422);
-        done();
-      }
     });
 
     it('rejects updating with empty password', function(done) {
@@ -426,16 +421,11 @@ describe('User', function() {
       });
 
     it('rejects passwords longer than 72 characters', function(done) {
-      try {
-        User.create({ email: 'b@c.com', password: pass73Char }, function(err) {
-          if (err) return done(err);
-          done(new Error('User.create() should have thrown an error.'));
-        });
-      } catch (err) {
+      User.create({ email: 'b@c.com', password: pass73Char }, function(err) {
         expect(err.code).to.equal('PASSWORD_TOO_LONG');
         expect(err.statusCode).to.equal(422);
         done();
-      }
+      });
     });
 
     it('rejects a new user with password longer than 72 characters', function(done) {
